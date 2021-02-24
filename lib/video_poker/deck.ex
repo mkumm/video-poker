@@ -28,7 +28,7 @@ defmodule VideoPoker.Deck do
   def flush?(_hand), do: false
 
   def win_pair?([]), do: false
-  def win_pair?([{v,_s}|cs] = _hand) when v >= 10 do
+  def win_pair?([{v,_s}|cs] = _hand) when v >= 11 do
     case Enum.any?(cs, fn {n,_s} -> n == v end) do
       true -> true
       _ -> win_pair?(cs)
