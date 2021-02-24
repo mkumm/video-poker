@@ -5,7 +5,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
     def mount(_params, _session, socket) do
       money = 0
-      hand = []
+      hand = [{nil,nil},{nil,nil},{nil,nil},{nil,nil},{nil,nil}]
       deck = []
       state = :start
       hold_cards = []
@@ -23,9 +23,6 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
     def render(assigns) do
       ~L"""
-
-
-
       <table class="paytable">
       <tr <%= if @result == :royal_flush do %>class="font-bold win_line" <% end %>>
         <td>Royal Flush</td><td>4000</td>
@@ -58,50 +55,30 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
       </table>
 
-
-
-
-
-
       <div class="grid grid-cols-5 pb-8 content-center">
-        <%= if @state == :start do %>
 
-          <div class="p-2 mx-3 card">
-            <img src="images/cards/back.svg" />
-          </div>
-          <div class="p-2 mx-3 card">
-            <img src="images/cards/back.svg" />
-          </div>
-          <div class="p-2 mx-3 card">
-            <img src="images/cards/back.svg" />
-          </div>
-          <div class="p-2 mx-3 card">
-            <img src="images/cards/back.svg" />
-          </div>
-          <div class="p-2 mx-3 card">
-            <img src="images/cards/back.svg" />
-          </div>
-        <% else %>
 
 
           <%= for {{v,s},i} <- Enum.with_index(@hand,0) do %>
-            <div
-              phx-click="hold"
-              phx-value-pos="<%=i%>"
-              class="p-2 mx-3
-                <%= if i in @hold_cards do %>
-                  card-selected
-                <% else %>
-                  card
-                <%end%>">
-                <img src="<%=img_from(v,s)%>" />
+            <div phx-click="hold" phx-value-pos="<%=i%>"
+                  class="p-2 mx-3
+                    <%= if i in @hold_cards do %>
+                      card-selected
+                    <% else %>
+                      card
+                    <%end%>">
+              <%= if v == nil do %>
+              <img src="images/cards/back.svg" />
+              <% else %>
+              <img src="<%=img_from(v,s)%>" />
+              <% end %>
             </div>
           <% end %>
-        <% end %>
+
       </div>
 
       <div class="status grid grid-cols-3 gap-8 pb-12">
-        <div class="bg-white border rounded-lg p-6"><%= get_result(@hand) %></div>
+        <div class="bg-white border rounded-lg p-6"><%= results(@result) %></div>
         <div class="bg-white border rounded-lg p-6 text-center">
         <%= if @winnings > 0 do %>
             Won <%= @winnings %>
@@ -134,6 +111,8 @@ defmodule VideoPokerWeb.VideoPokerLive do
       """
     end
 
+
+
     def handle_event("add_money", _params, socket) do
       socket = assign(socket, money: socket.assigns.money+20)
       {:noreply, socket}
@@ -155,7 +134,17 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
     def handle_event("new", _params, socket) do
       money = socket.assigns.money - 5
-      {hand, deck} = Deck.new_hand()
+      deck = Deck.new()
+      hand = [{nil,nil},{nil,nil},{nil,nil},{nil,nil},{nil,nil}]
+
+      Enum.each([0,1,2,3,4], fn x ->
+        send(self(), {:draw_card, x})
+      end)
+
+      send(self(), :init_draw)
+
+
+
       socket =
         assign(socket,
           money: money,
@@ -169,30 +158,60 @@ defmodule VideoPokerWeb.VideoPokerLive do
       {:noreply, socket}
     end
 
+
+
     def handle_event("draw_cards", _params, socket) do
-      money = socket.assigns.money
+
       replace_cards =
         Enum.filter(
           [0,1,2,3,4],
           fn x -> x not in socket.assigns.hold_cards
         end)
 
-      {hand, deck} =
-        Deck.draw(
-          socket.assigns.hand,
-          socket.assigns.deck,
-          replace_cards
-        )
-      winnings = PayTable.multiplier(Deck.best_hand(hand))
+      Enum.each(replace_cards, fn x ->
+        send(self(), {:remove_card, x})
+      end)
 
-      socket =
-        assign(socket,
-          money: money + (winnings * 5),
-          hand: hand,
-          deck: deck,
-          winnings: winnings * 5,
-          result: Deck.best_hand(hand),
-          state: :finished
+      Enum.each(replace_cards, fn x ->
+        send(self(), {:draw_card, x})
+      end)
+
+      send(self(), :check_results)
+
+      {:noreply, socket}
+    end
+
+    def handle_info(:init_draw, socket) do
+      result = Deck.best_hand(socket.assigns.hand)
+      socket = assign(socket, result: result)
+      {:noreply, socket}
+    end
+
+    def handle_info({:remove_card, pos}, socket) do
+      hand = Deck.remove_card(socket.assigns.hand, pos)
+      socket = assign(socket, hand: hand)
+      {:noreply, socket}
+    end
+
+    def handle_info({:draw_card, pos}, socket) do
+      :timer.sleep(250)
+      {hand, deck} = Deck.draw(socket.assigns.hand, socket.assigns.deck, [pos])
+      socket = assign(socket, hand: hand, deck: deck)
+      {:noreply, socket}
+    end
+
+
+
+    def handle_info(:check_results, socket) do
+      result = Deck.best_hand(socket.assigns.hand)
+      winnings = PayTable.multiplier(Deck.best_hand(socket.assigns.hand))
+      state = :finished
+      money = winnings * 5 + socket.assigns.money
+      socket = assign(socket,
+        result: result,
+        winnings: winnings * 5,
+        state: state,
+        money: money
         )
       {:noreply, socket}
     end

@@ -24,6 +24,10 @@ defmodule VideoPoker.Deck do
     {card, deck}
   end
 
+  def remove_card(hand, pos) do
+    List.replace_at(hand, pos, {nil,nil})
+  end
+
   def flush?([{_,a},{_,a},{_,a},{_,a},{_,a}]), do: true
   def flush?(_hand), do: false
 
@@ -123,8 +127,13 @@ defmodule VideoPoker.Deck do
       &quads?/1,
       &royal_flush?/1
     ]
-    Enum.map(fns, fn x -> x.(hand) end)
-    |> result()
+
+    case Enum.find(hand, fn x -> x == {nil,nil} end) do
+      nil ->
+        Enum.map(fns, fn x -> x.(hand) end)
+        |> result()
+      _ -> :nothing
+    end
   end
 
   def result([false,  false,  false,  false,  false,  false,  false,  false]), do: :high_card
