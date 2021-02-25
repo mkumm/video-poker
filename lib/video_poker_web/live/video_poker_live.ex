@@ -65,13 +65,17 @@ defmodule VideoPokerWeb.VideoPokerLive do
           <table class="stats w-full">
           <tr>
           <td>Games Played</td><td class="text-right"> <%= @stats_games_played %></td>
-          </tr><tr>
-          <td>Money Added</td><td class="text-right"><%= @stats_money_added %></td>
-          </tr><tr>
+          </tr>
+          <tr>
           <td>Games Won</td><td class="text-right"><%= @stats_games_won %></td>
-          </tr><tr>
+          </tr>
+          <tr>
+          <td>Credits Added</td><td class="text-right"><%= @stats_money_added %></td>
+          </tr>
+          <tr>
           <td>Credits Played</td><td class="text-right"><%= @stats_credits_played %></td>
-          </tr><tr>
+          </tr>
+          <tr>
           <td>Credits Won</td><td class="text-right"><%= @stats_credits_won %></td>
           </tr>
           </table>
@@ -99,13 +103,22 @@ defmodule VideoPokerWeb.VideoPokerLive do
       </div>
 
       <div class="status grid grid-cols-3 gap-8 m-3 pb-3">
-        <div class="status-box"> <%= if @winnings > 0 do%> Won: <span class="block float-right text-right"><%= @winnings %></span><% end %></div>
+        <div class="status-box">
+          Won:
+            <span class="block float-right text-right">
+              <%= if @winnings > 0 do%>
+                <%= @winnings %>
+              <% else %>
+                - -
+              <% end %>
+            </span>
+          </div>
         <div class="status-box">Bet: <span class="block float-right text-right"><%= @bet %></span></div>
         <div class="status-box">Credit: <span class="block float-right text-right"><%= @money %></span></div>
       </div>
 
       <div class="grid grid-cols-5 gap-8 m-3">
-        <button phx-click="add_money"><span>Add $20</span></button>
+        <button phx-click="add_money"><span>Add 20</span></button>
 
         <%= cond do %>
           <% @money > 0 and @state != :deal -> %>

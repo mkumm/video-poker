@@ -2,6 +2,7 @@ defmodule VideoPoker.Deck do
   @suits ~w(hearts spades diamonds clubs)a
   @values [2,3,4,5,6,7,8,9,10,11,12,13,14]
 
+
   def new() do
     Enum.shuffle(for s <- @suits, v <- @values, do: {v,s})
   end

@@ -10,12 +10,6 @@ It was created using Elixir/Phoenix/LiveView and no JS was used in the creation 
 ![screen preview](docs/sprytna-video-poker.png)
 
 
-## Description
-
-Sprytna Video Poker was made to simulate a classic video poker machine. 
-
-It was created using Elixir/Phoenix/LiveView and no JS was used in the creation of this application.
-
 ## Starting Server
 
 To start your Phoenix server:
