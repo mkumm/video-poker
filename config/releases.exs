@@ -1,3 +1,5 @@
+import Config
+
 config :video_poker, VideoPokerWeb.Endpoint,
   server: true,
   http: [port: {:system, "PORT"}], # Needed for Phoenix 1.2 and 1.4. Doesn't hurt for 1.3.
