@@ -5,62 +5,83 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
     def mount(_params, _session, socket) do
       money = 0
-      hand = [{nil,nil},{nil,nil},{nil,nil},{nil,nil},{nil,nil}]
-      deck = []
-      state = :start
-      hold_cards = []
+
       socket =
         assign(socket,
+          stats_games_played: 0,
+          stats_money_added: 0,
+          stats_games_won: 0,
+          stats_credits_played: 0,
+          stats_credits_won: 0,
           money: money,
-          hand: hand,
-          deck: deck,
-          state: state,
+          bet: 0,
+          hand: Deck.empty_hand(),
+          deck: [],
+          state: :new,
           result: :none,
           winnings: 0,
-          hold_cards: hold_cards)
+          hold_cards: [])
       {:ok, socket}
     end
 
     def render(assigns) do
       ~L"""
-      <table class="paytable">
-      <tr <%= if @result == :royal_flush do %>class="font-bold win_line" <% end %>>
-        <td>Royal Flush</td><td>4000</td>
-        </tr>
-        <tr <%= if @result == :straight_flush do %>class="font-bold win_line" <% end %>>
-        <td>Straight Flush</td><td>250</td>
-        </tr>
-        <tr <%= if @result == :quads do %>class="font-bold win_line" <% end %>>
-        <td>4 of a Kind</td><td>150</td>
-        </tr>
-        <tr <%= if @result == :full_house do %>class="font-bold win_line" <% end %> >
 
-        <td>Full House</td><td>30</td>
-        </tr>
-        <tr <%= if @result == :flush do %>class="font-bold win_line" <% end %>>
-        <td>Flush</td><td>25</td>
-        </tr>
-        <tr <%= if @result == :straight do %>class="font-bold win_line" <% end %>>
-        <td>Straight</td><td>20</td>
-        </tr>
-        <tr <%= if @result == :trips do %>class="font-bold win_line" <% end %>>
-        <td>3 of a Kind</td><td>15</td>
-        </tr>
-        <tr <%= if @result == :two_pair do %>class="font-bold win_line" <% end %>>
-        <td>Two Pair</td><td>10</td>
-        </tr>
-        <tr <%= if @result == :winning_pair do %>class="font-bold win_line" <% end %>>
-        <td>Jacks or Better</td><td>5</td>
-        </tr>
+      <div class="grid grid-cols-2 gap-4 pb-4">
+        <div class="col-span-1 border-4 bg-white p-6 rounded-3xl">
+        <h2 class="font-bold text-xl pb-3">Pay Table</h2>
+          <table class="paytable w-full">
+            <tr <%= if @result == :royal_flush do %>class="font-bold win_line" <% end %>>
+            <td>Royal Flush</td><td class="text-right"><%= max(@bet * 250, 250) %></td>
+            </tr>
+            <tr <%= if @result == :straight_flush do %>class="font-bold win_line" <% end %>>
+            <td>Straight Flush</td><td class="text-right"><%= max(@bet * 50, 50) %></td>
+            </tr>
+            <tr <%= if @result == :quads do %>class="font-bold win_line" <% end %>>
+            <td>4 of a Kind</td><td class="text-right"><%= max(@bet * 30, 30) %></td>
+            </tr>
+            <tr <%= if @result == :full_house do %>class="font-bold win_line" <% end %> >
+            <td>Full House</td><td class="text-right"><%= max(@bet * 6, 6) %></td>
+            </tr>
+            <tr <%= if @result == :flush do %>class="font-bold win_line" <% end %>>
+            <td>Flush</td><td class="text-right"><%= max(@bet * 5, 5) %></td>
+            </tr>
+            <tr <%= if @result == :straight do %>class="font-bold win_line" <% end %>>
+            <td>Straight</td><td class="text-right"><%= max(@bet * 4, 4) %></td>
+            </tr>
+            <tr <%= if @result == :trips do %>class="font-bold win_line" <% end %>>
+            <td>3 of a Kind</td><td class="text-right"><%= max(@bet * 3, 3) %></td>
+            </tr>
+            <tr <%= if @result == :two_pair do %>class="font-bold win_line" <% end %>>
+            <td>Two Pair</td><td class="text-right"><%= max(@bet * 2, 2) %></td>
+            </tr>
+            <tr <%= if @result == :winning_pair do %>class="font-bold win_line" <% end %>>
+            <td>Jacks or Better</td><td class="text-right"><%= max(@bet * 1, 1) %></td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-span-1 border-4 bg-white p-6 rounded-3xl">
+          <h2 class="font-bold text-xl pb-3">Stats</h2>
+          <table class="stats w-full">
+          <tr>
+          <td>Games Played</td><td class="text-right"> <%= @stats_games_played %></td>
+          </tr><tr>
+          <td>Money Added</td><td class="text-right"><%= @stats_money_added %></td>
+          </tr><tr>
+          <td>Games Won</td><td class="text-right"><%= @stats_games_won %></td>
+          </tr><tr>
+          <td>Credits Played</td><td class="text-right"><%= @stats_credits_played %></td>
+          </tr><tr>
+          <td>Credits Won</td><td class="text-right"><%= @stats_credits_won %></td>
+          </tr>
+          </table>
+        </div>
+      </div>
 
-      </table>
-
-      <div class="grid grid-cols-5 pb-8 content-center">
-
-
+      <div class="grid grid-cols-5 pb-3 content-center">
 
           <%= for {{v,s},i} <- Enum.with_index(@hand,0) do %>
-            <div phx-click="hold" phx-value-pos="<%=i%>"
+            <div <%= if @state == :deal do %>phx-click="hold" phx-value-pos="<%=i%>"<%end%>
                   class="p-2 mx-3
                     <%= if i in @hold_cards do %>
                       card-selected
@@ -77,45 +98,79 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
       </div>
 
-      <div class="status grid grid-cols-3 gap-8 pb-12">
-        <div class="bg-white border rounded-lg p-6"><%= results(@result) %></div>
-        <div class="bg-white border rounded-lg p-6 text-center">
-        <%= if @winnings > 0 do %>
-            Won <%= @winnings %>
-        <% else %>
-            Bet 5
-        <% end %>
-        </div>
-
-        <div class="bg-white border rounded-lg p-6 text-right">$<%= @money %></div>
-
+      <div class="status grid grid-cols-3 gap-8 m-3 pb-3">
+        <div class="status-box"> <%= if @winnings > 0 do%> Won: <span class="block float-right text-right"><%= @winnings %></span><% end %></div>
+        <div class="status-box">Bet: <span class="block float-right text-right"><%= @bet %></span></div>
+        <div class="status-box">Credit: <span class="block float-right text-right"><%= @money %></span></div>
       </div>
 
-      <div class="status grid grid-cols-5 gap-8 pb-12">
+      <div class="grid grid-cols-5 gap-8 m-3">
+        <button phx-click="add_money"><span>Add $20</span></button>
 
-      <button phx-click="add_money">Add $20</button>
-      <%= if @money > 0 do %>
-      <button class="btn btn--primary" phx-click="new">Bet 1</button>
-      <button phx-click="new">Max Bet</button>
-      <% else %>
-      <button></button>
-      <button></button>
-      <% end %>
-      <div></div>
-      <%= if @state == :new do %>
-      <button phx-click="draw_cards">Deal</button>
-      <% else %>
-      <button></button>
-      <% end %>
+        <%= cond do %>
+          <% @money > 0 and @state != :deal -> %>
+            <button phx-click="bet1">Bet 1</button>
+            <%= if @money < 5 do %>
+              <button></button>
+            <% else %>
+              <button phx-click="betmax">Max Bet</button>
+            <% end %>
+
+          <% true -> %>
+            <button></button>
+            <button></button>
+          <% end %>
+
+        <div></div>
+        <%= cond do %>
+          <% @state in [:new, :draw, :finished] -> %>
+            <button></button>
+          <% @state == :bet -> %>
+            <button phx-click="deal">Deal</button>
+          <% true -> %>
+            <button phx-click="draw">Draw</button>
+        <% end %>
+
 
       """
     end
 
 
-
     def handle_event("add_money", _params, socket) do
-      socket = assign(socket, money: socket.assigns.money+20)
+      socket = assign(socket,
+        money: socket.assigns.money+20,
+        stats_money_added: socket.assigns.stats_money_added+20)
       {:noreply, socket}
+    end
+
+    def handle_event("bet1", _params, socket) do
+
+      bet =
+        if(socket.assigns.state == :finished) do
+          1
+        else
+          socket.assigns.bet + 1
+        end
+
+      money = socket.assigns.money - 1
+      {:noreply, assign(socket, bet: bet, money: money, state: :bet)}
+    end
+
+    def handle_event("betmax", _params, socket) do
+      bet = 5
+      money = socket.assigns.money - 5
+      send(self(), :deal)
+      {:noreply, assign(socket, state: :bet, bet: bet, money: money)}
+    end
+
+    def handle_event("deal", _params, socket) do
+      send(self(), :deal)
+      {:noreply, assign(socket, state: :deal)}
+    end
+
+    def handle_event("draw", _params, socket) do
+      send(self(), :draw_cards)
+      {:noreply, assign(socket, state: :draw)}
     end
 
     def handle_event("hold", %{"pos" => pos}, socket) do
@@ -132,8 +187,9 @@ defmodule VideoPokerWeb.VideoPokerLive do
       {:noreply, socket}
     end
 
-    def handle_event("new", _params, socket) do
-      money = socket.assigns.money - 5
+    def handle_info(:deal, socket) do
+
+
       deck = Deck.new()
       hand = [{nil,nil},{nil,nil},{nil,nil},{nil,nil},{nil,nil}]
 
@@ -143,24 +199,22 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
       send(self(), :init_draw)
 
-
-
       socket =
         assign(socket,
-          money: money,
+
           hand: hand,
           deck: deck,
           winnings: 0,
           hold_cards: [],
           result: Deck.best_hand(hand),
-          state: :new
+          state: :deal
         )
       {:noreply, socket}
     end
 
 
 
-    def handle_event("draw_cards", _params, socket) do
+    def handle_info(:draw_cards,  socket) do
 
       replace_cards =
         Enum.filter(
@@ -177,6 +231,8 @@ defmodule VideoPokerWeb.VideoPokerLive do
       end)
 
       send(self(), :check_results)
+
+      socket = assign(socket, hold_cards: [])
 
       {:noreply, socket}
     end
@@ -200,18 +256,20 @@ defmodule VideoPokerWeb.VideoPokerLive do
       {:noreply, socket}
     end
 
-
-
     def handle_info(:check_results, socket) do
       result = Deck.best_hand(socket.assigns.hand)
       winnings = PayTable.multiplier(Deck.best_hand(socket.assigns.hand))
-      state = :finished
-      money = winnings * 5 + socket.assigns.money
+      games_won = socket.assigns.stats_games_won + min(winnings,1)
+      money = winnings * socket.assigns.bet + socket.assigns.money
       socket = assign(socket,
         result: result,
-        winnings: winnings * 5,
-        state: state,
-        money: money
+        winnings: winnings * socket.assigns.bet,
+        state: :finished,
+        money: money,
+        stats_games_won: games_won,
+        stats_games_played: socket.assigns.stats_games_played + 1,
+        stats_credits_played: socket.assigns.bet + socket.assigns.stats_credits_played,
+        stats_credits_won: socket.assigns.stats_credits_won + winnings * socket.assigns.bet
         )
       {:noreply, socket}
     end

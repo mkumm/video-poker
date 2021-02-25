@@ -10,21 +10,33 @@
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
+  <div class="flex flex-col h-screen justify-between">
     <header>
       <section class="container">
         <nav role="navigation">
-          <ul>
 
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-            <% end %>
-          </ul>
         </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
+        <h1 class="text-4xl font-bold py-8">Video Poker</h1>
       </section>
     </header>
     <%= @inner_content %>
+    <footer class="bg-white mt-12">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+    <div class="flex justify-center space-x-6 md:order-2">
+        <img src="images/sprytna.png" width="60px"  />
+
+
+
+    </div>
+    <div class="mt-8 md:mt-0 md:order-1">
+      <p class="text-center text-base text-gray-400">
+        &copy; 2020 Sprytna, LLC. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+</div>
+
+
   </body>
 </html>

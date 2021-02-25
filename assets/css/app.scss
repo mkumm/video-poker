@@ -9,12 +9,10 @@
 @tailwind utilities;
 
 html {
-  @apply bg-blue-100;
+  @apply bg-blue-50;
 }
 
-td {
-  padding: 0;
-}
+
 
 .card {
   @apply border-white border-4 shadow-md rounded bg-yellow-50;
@@ -23,27 +21,40 @@ td {
   @apply border-yellow-200 border-4 shadow-md rounded bg-yellow-100;
 }
 
-.paytable {
-  @apply bg-blue-800 border-4 p-3 border-yellow-300;
-}
-.paytable td {
-  @apply px-4 py-2 text-2xl font-bold text-yellow-300;
+tr {
+  @apply px-2 border-red-500; 
 }
 
+.paytable {
+  @apply mb-2;
+}
+.paytable td, .stats td {
+  @apply font-bold px-2 border-gray-300 border-b;
+}
+.stats td {
+  @apply px-2;
+}
 .win_line {
   @apply bg-yellow-100;
 }
 .win_line td {
-  @apply text-blue-700;
+
+}
+
+.status-box {
+  @apply bg-white border-2 rounded-xl py-2 px-4 text-black text-2xl;
 }
 
 .status {
-  @apply text-blue-700 font-bold text-3xl;
+  @apply text-blue-900 font-bold text-3xl;
 }
 
+
+
 button {
-  @apply mt-3 w-full inline-flex items-center justify-center text-4xl px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto;
+  @apply py-2 border-4 rounded rounded-xl border-yellow-200 shadow-md font-bold text-2xl bg-yellow-50 hover:bg-yellow-100 hover:border-yellow-300 focus:outline-none focus:ring-offset-yellow-300;
 }
+
 
 /* LiveView specific classes for your customizations */
 .phx-no-feedback.invalid-feedback,

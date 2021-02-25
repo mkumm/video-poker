@@ -3,11 +3,12 @@ defmodule VideoPoker.Deck do
   @values [2,3,4,5,6,7,8,9,10,11,12,13,14]
 
   def new() do
-
     Enum.shuffle(for s <- @suits, v <- @values, do: {v,s})
   end
 
   def new_hand(), do: Enum.split(new(), 5)
+
+  def empty_hand(), do: [{nil,nil},{nil,nil},{nil,nil},{nil,nil},{nil,nil}]
 
   def draw(hand, deck, []), do: {hand, deck}
   def draw(hand, deck, positions) do
