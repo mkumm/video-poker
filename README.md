@@ -1,4 +1,22 @@
-# VideoPoker
+# Video Poker V1.1
+
+## Description
+
+Sprytna Video Poker was made to simulate a classic video poker machine, albeit with a cleaner look. It also includes your game stats that can be kept from session to session.
+
+It was created using Elixir/Phoenix/LiveView and no JS was used in the creation of this application.
+
+## Preview
+![screen preview](docs/sprytna-video-poker.png)
+
+
+## Description
+
+Sprytna Video Poker was made to simulate a classic video poker machine. 
+
+It was created using Elixir/Phoenix/LiveView and no JS was used in the creation of this application.
+
+## Starting Server
 
 To start your Phoenix server:
 
