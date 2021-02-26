@@ -25,8 +25,8 @@ defmodule VideoPokerWeb.VideoPokerLive do
     def render(assigns) do
       ~L"""
 
-      <div class="grid grid-cols-2 gap-4 pb-4">
-        <div class="col-span-1 border-4 bg-white p-6 rounded-3xl">
+      <div class="grid md:grid-cols-2 gap-4 pb-4 grid-cols-1">
+        <div class="col-span-1 border-4 bg-white p-6 rounded-xl">
         <h2 class="font-bold text-xl pb-3">Pay Table</h2>
           <table class="paytable w-full">
             <tr <%= if @result == :royal_flush do %>class="font-bold win_line" <% end %>>
@@ -58,7 +58,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
             </tr>
           </table>
         </div>
-        <div class="col-span-1 border-4 bg-white p-6 rounded-3xl">
+        <div class="col-span-1 border-4 bg-white p-6 rounded-xl md:block hidden">
           <h2 class="font-bold text-xl pb-3">Stats</h2>
           <table class="stats w-full">
           <tr>
@@ -80,11 +80,11 @@ defmodule VideoPokerWeb.VideoPokerLive do
         </div>
       </div>
 
-      <div class="grid grid-cols-5 pb-3 content-center">
+      <div class="grid grid-cols-5 md:gap-3 pb-3 content-center">
 
           <%= for {{v,s},i} <- Enum.with_index(@hand,0) do %>
             <div <%= if @state == :deal do %>phx-click="hold" phx-value-pos="<%=i%>"<%end%>
-                  class="p-2 mx-3
+                  class="
                     <%= if i in @hold_cards do %>
                       card-selected
                     <% else %>
@@ -100,7 +100,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
       </div>
 
-      <div class="status grid grid-cols-3 gap-8 m-3 pb-3">
+      <div class="status grid grid-cols-3 md:gap-8 gap-2 m-3 pb-3">
         <div class="status-box">
           Won:
             <span class="block float-right text-right">
@@ -115,7 +115,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
         <div class="status-box">Credit: <span class="block float-right text-right"><%= @money %></span></div>
       </div>
 
-      <div class="grid grid-cols-5 gap-8 m-3">
+      <div class="grid grid-cols-5 md:gap-8 gap-1 m-3">
         <button phx-click="add_money"><span>Add 20</span></button>
 
         <%= cond do %>
