@@ -1,19 +1,8 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace of mind from prototype to production</p>
-
-  <form phx-change="suggest" phx-submit="search">
-    <input type="text" name="q" value="<%= @query %>" placeholder="Live dependency search" list="results" autocomplete="off"/>
-    <datalist id="results">
-      <%= for {app, _vsn} <- @results do %>
-        <option value="<%= app %>"><%= app %></option>
-      <% end %>
-    </datalist>
-    <button type="submit" phx-disable-with="Searching...">Go to Hexdocs</button>
-  </form>
-</section>
-
-<section class="row">
-
-
+<section>
+  <h1 class="text-2xl">Sprytna Playground</h1>
+  <div class="grid grid-cols-3 gap-4 pt-6">
+    <div class="px-4">Video Poker</div>
+    <div class="px-4">Oats and Hay</div>
+    <div class="px-4">Coming 3/6</div>
+  </div>
 </section>

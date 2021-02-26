@@ -100,7 +100,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
       </div>
 
-      <div class="status grid grid-cols-3 md:gap-8 gap-2 m-3 pb-3">
+      <div class="status grid grid-cols-3 md:gap-8 gap-2 my-3 pb-3">
         <div class="status-box">
           Won:
             <span class="block float-right text-right">
@@ -115,7 +115,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
         <div class="status-box">Credit: <span class="block float-right text-right"><%= @money %></span></div>
       </div>
 
-      <div class="grid grid-cols-5 md:gap-8 gap-1 m-3">
+      <div class="grid grid-cols-5 md:gap-4 gap-1 my-3">
         <button phx-click="add_money"><span>Add 20</span></button>
 
         <%= cond do %>

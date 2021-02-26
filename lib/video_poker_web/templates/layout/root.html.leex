@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -9,7 +9,8 @@
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
-  <body>
+  <body class="flex flex-col h-full">
+  <div class="flex-1">
 
     <header>
       <section class="container">
@@ -19,24 +20,16 @@
         <h1 class="text-4xl font-bold py-8">Video Poker</h1>
       </section>
     </header>
+
     <%= @inner_content %>
-    <footer class="bg-white mt-12">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
-    <div class="flex justify-center space-x-6 md:order-2">
-        <img src="images/sprytna.svg" width="120px"  />
-
-
-
     </div>
-    <div class="mt-8 md:mt-0 md:order-1">
-      <p class="text-center text-base text-gray-400">
-        &copy; 2020 Sprytna, LLC. All rights reserved.
-      </p>
-    </div>
-  </div>
-</footer>
-</div>
 
+    <footer class="bg-white pin-b border-t p-4 text-center w-full order-1">
+        <img class="mx-auto" src="images/sprytna.svg" width="120px"  />
+        <p class="text-center text-base text-gray-400">
+          &copy; 2020 Sprytna, LLC. All rights reserved.
+        </p>
+    </footer>
 
   </body>
 </html>
