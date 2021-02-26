@@ -4,8 +4,6 @@ defmodule VideoPokerWeb.VideoPokerLive do
     alias VideoPoker.{Deck, PayTable}
 
     def mount(_params, _session, socket) do
-      money = 0
-
       socket =
         assign(socket,
           stats_games_played: 0,
@@ -13,7 +11,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
           stats_games_won: 0,
           stats_credits_played: 0,
           stats_credits_won: 0,
-          money: money,
+          money: 0,
           bet: 0,
           hand: Deck.empty_hand(),
           deck: [],
