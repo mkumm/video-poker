@@ -27,7 +27,7 @@ defmodule VideoPokerWeb.VideoPokerLive do
 
       <div class="grid md:grid-cols-2 gap-4 pb-4 grid-cols-1">
         <div class="col-span-1 border-4 bg-white p-6 rounded-xl">
-        <h2 class="font-bold text-xl pb-3">Pay Table</h2>
+        <h2 class="font-bold md:text-xl pb-3">Pay Table</h2>
           <table class="paytable w-full">
             <tr <%= if @result == :royal_flush do %>class="font-bold win_line" <% end %>>
             <td>Royal Flush</td><td class="text-right"><%= max(@bet * 250, 250) %></td>
