@@ -37,7 +37,7 @@ tr {
   @apply mb-2;
 }
 .paytable td, .stats td {
-  @apply md:font-bold px-2 border-gray-300 border-b;
+  @apply md:font-bold md:text-lg text-xs px-2 border-gray-300 border-b;
 }
 .stats td {
   @apply px-2;
@@ -50,17 +50,17 @@ tr {
 }
 
 .status-box {
-  @apply bg-white border-2 rounded-xl py-2 md:px-4 px-1 text-black md:text-2xl text-sm;
+  @apply bg-white border-2 rounded-xl py-2 md:px-4 px-2 text-black md:text-2xl text-sm;
 }
 
 .status {
-  @apply text-blue-900 font-bold md:text-3xl text-sm;
+  @apply text-blue-900 md:font-bold md:text-3xl text-sm;
 }
 
 
 
 button {
-  @apply md:py-2 py-1 md:border-4 border-2 rounded rounded-xl border-yellow-200 shadow-md font-bold md:text-2xl text-sm bg-yellow-50 hover:bg-yellow-100 hover:border-yellow-300 focus:outline-none focus:ring-offset-yellow-300;
+  @apply md:py-2 py-1 md:border-4 border-2 rounded rounded-xl border-yellow-200 shadow-md md:font-bold md:text-2xl text-xs bg-yellow-50 hover:bg-yellow-100 hover:border-yellow-300 focus:outline-none focus:ring-offset-yellow-300;
 }
 
 
